@@ -55,13 +55,23 @@
                 </select>
               </td>
               <td class="px-4 py-2">
-                <select name="uid" class="rounded border px-7 py-1">
-                  <option value="">Quitar UID</option>
-                  @foreach($uidsDisponibles as $uid)
-                    <option value="{{ $uid }}" @selected(optional($usuario->tarjeta)->uid === $uid)>{{ $uid }}</option>
-                  @endforeach
-                </select>
-              </td>
+ 		 <select name="uid" class="rounded border px-7 py-1">
+    		<option value="">Quitar UID</option>
+ 		   {{-- Mostrar el UID actual aunque no esté disponible --}}
+		    @if($usuario->tarjeta)
+	 	     <option value="{{ $usuario->tarjeta->uid }}" selected>
+		        {{ $usuario->tarjeta->uid }}
+		      </option>
+		    @endif
+
+		    {{-- Mostrar los demás UIDs disponibles que no están en uso --}}
+		    @foreach($uidsDisponibles as $uid)
+		      @if($usuario->tarjeta?->uid !== $uid)
+		        <option value="{{ $uid }}">{{ $uid }}</option>
+		      @endif
+		    @endforeach
+		  </select>
+	      </td>
               <td class="px-4 py-2 text-center space-x-2">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded">
                   Guardar

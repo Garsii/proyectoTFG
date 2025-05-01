@@ -8,11 +8,8 @@ use App\Models\Tarjeta;
 use App\Models\Registro;
 use Carbon\Carbon;
 
-class AccesoController extends Controller
+class AccesoController extends Controller 
 {
-    /**
-     * Registra un intento de acceso vía NFC.
-     */
     public function registrar(Request $req)
     {
         $data = $req->validate([
@@ -20,30 +17,29 @@ class AccesoController extends Controller
             'punto_id' => 'required|integer|exists:puntos_acceso,id',
         ]);
 
-        $ahora = Carbon::now('Europe/Madrid');
+        $ahora   = Carbon::now('Europe/Madrid');
+        // Si la tarjeta no existe, la creamos. Si existe, la recuperamos.
+        $tarjeta = Tarjeta::firstOrCreate(['uid' => $data['uid']]);
 
-        // Comprueba si la tarjeta existe y está asignada
-        $tarjeta = Tarjeta::where('uid', $data['uid'])->first();
-        $permitido = $tarjeta && $tarjeta->usuario_id;
+        // Permitido sólo si ya tenía usuario asignado
+        $permitido = $tarjeta->usuario_id !== null;
 
-        try {
-            $reg = Registro::create([
-                'usuario_id'      => $tarjeta?->usuario_id,
-                'tarjeta_id'      => $tarjeta?->id,
-                'punto_acceso_id' => $data['punto_id'],
-                'fecha'           => $ahora,
-                'acceso'          => $permitido ? 'permitido' : 'denegado',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        // Creamos el registro (sin punto_acceso_id, pues no existe la columna)
+        $reg = Registro::create([
+            'usuario_id' => $tarjeta->usuario_id,
+            'tarjeta_id' => $tarjeta->id,
+            'fecha'      => $ahora,
+            'acceso'     => $permitido ? 'permitido' : 'denegado',
+        ]);
 
-        return response()->json([
-            'status'      => $permitido ? 'OK' : 'DENIED',
-            'registro_id' => $reg->id,
-            'timestamp'   => $ahora->toDateTimeString(),
-        ], $permitido ? 200 : 403);
+        // Devolvemos JSON y código HTTP según permiso
+        return response()->json(
+            [
+                'status'      => $permitido ? 'OK' : 'DENIED',
+                'registro_id' => $reg->id,
+                'timestamp'   => $ahora->toDateTimeString(),
+            ],
+            $permitido ? 200 : 403
+        );
     }
 }

@@ -11,4 +11,3 @@ Route::post('lectura', [NfcController::class, 'store']);
 // REGISTRO de acceso
 Route::post('registro-acceso', [AccesoController::class, 'registrar']);
 
-Route::get('ping', fn() => response()->json(['pong'=>true]));

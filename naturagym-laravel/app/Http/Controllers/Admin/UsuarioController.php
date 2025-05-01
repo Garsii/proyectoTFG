@@ -40,19 +40,18 @@ public function index(Request $request)
     $horas = [];
     $aforoPorHora = [];
 
-    // Corregimos el rango para las últimas 5 horas (incluyendo la actual)
-    for ($i = 5; $i >= 1; $i--) {
-        $inicio = $now->copy()->subHours($i)->startOfHour();
-        $fin = $inicio->copy()->addHour();
+    for ($i = 4; $i >= 0; $i--) {
+      $inicio = $now->copy()->subHours($i)->startOfHour();
+      $fin    = $inicio->copy()->addHour();
 
-        $aforo = Registro::whereBetween('fecha', [$inicio, $fin])
-            ->distinct('usuario_id')  // Más eficiente que groupBy
-            ->count('usuario_id');
+      $aforo = Registro::whereBetween('fecha', [$inicio, $fin])
+          ->distinct('usuario_id')
+          ->count('usuario_id');
 
-        // Etiquetas tipo "Hace 5h", "Hace 4h"... "Ahora"
-        $horas[] = ($i === 1) ? 'Ahora' : "Hace {$i}h";
-        $aforoPorHora[] = $aforo;
-    }
+     $horas[] = ($i === 0) ? 'Ahora' : "Hace {$i}h";
+     $aforoPorHora[] = $aforo;
+     }
+
 
     return view('admin.usuarios.index', compact(
         'usuarios', 
@@ -83,35 +82,30 @@ public function index(Request $request)
     {
         $usuario = User::findOrFail($id);
 
-        // Validar campos
-        $data = $request->validate([
-            'nombre'    => 'required|string|max:50',
-            'apellido'  => 'required|string|max:50',
-            'rol'       => 'required|in:usuario,admin',
-            'estado'    => 'required|in:activo,revocado',
-            'tarjeta_id'=> 'nullable|exists:tarjetas,id',
-        ]);
-
-        // Guardar cambios básicos
-        $usuario->nombre   = $data['nombre'];
-        $usuario->apellido = $data['apellido'];
-        $usuario->rol      = $data['rol'];
-        $usuario->estado   = $data['estado'];
+        // 1) Actualizar campos básicos
+        $usuario->nombre   = $request->input('nombre');
+        $usuario->apellido = $request->input('apellido');
+        $usuario->rol      = $request->input('rol');
+        $usuario->estado   = $request->input('estado');
         $usuario->save();
 
-        // Desvincular cualquier tarjeta previa
+        // 2) Desvincular tarjeta anterior (si existe)
         Tarjeta::where('usuario_id', $usuario->id)
                ->update(['usuario_id' => null]);
 
-        // Vincular nueva tarjeta si se seleccionó
-        if (! empty($data['tarjeta_id'])) {
-            $tarjeta = Tarjeta::find($data['tarjeta_id']);
-            $tarjeta->usuario_id = $usuario->id;
-            $tarjeta->save();
+        // 3) Asignar nueva tarjeta si se ha seleccionado UID
+        $uid = $request->input('uid');
+        if ($uid) {
+            $tarjeta = Tarjeta::where('uid', $uid)->first();
+            if ($tarjeta) {
+                $tarjeta->usuario_id = $usuario->id;
+                $tarjeta->save();
+            }
         }
 
-        return redirect()->route('admin.usuarios.index')
-                         ->with('success', 'Usuario actualizado correctamente.');
+        return redirect()
+               ->route('admin.usuarios.index')
+               ->with('success', 'Usuario actualizado correctamente.');
     }
 
     /**
