@@ -3,18 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Registro extends Model
 {
-    // Permitir asignar estos campos vía create([...])
     protected $fillable = [
-        'usuario_id',
-        'tarjeta_id',
-        'punto_acceso_id',
-        'fecha',
-	'acceso',
+        'usuario_id', 'tarjeta_id', 'punto_acceso_id', 'fecha', 'acceso'
     ];
 
-    // Si tu tabla no usa created_at / updated_at, descomenta:
-    // public $timestamps = false;
+    protected $casts = [
+        'fecha' => 'datetime',
+    ];
+
+    public function tarjeta(): BelongsTo
+    {
+        return $this->belongsTo(Tarjeta::class, 'tarjeta_id');
+    }
+
+    public function puntoAcceso(): BelongsTo
+    {
+        return $this->belongsTo(PuntoAcceso::class, 'punto_acceso_id');
+    }
 }
