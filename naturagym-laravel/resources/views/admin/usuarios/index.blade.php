@@ -15,8 +15,8 @@
            class="w-full md:w-1/3 px-4 py-2 rounded border">
   </form>
 
-  {{-- Formulario bulk-update --}}
-  <form method="POST" action="{{ route('admin.usuarios.bulkUpdate') }}">
+  {{-- Bulk‑update form --}}
+  <form id="bulk-form" method="POST" action="{{ route('admin.usuarios.bulkUpdate') }}">
     @csrf
     @method('PATCH')
 
@@ -41,28 +41,30 @@
               <td class="px-4 py-2">
                 <input type="text" name="usuarios[{{ $usuario->id }}][nombre]" 
                        value="{{ $usuario->nombre }}" 
+                       form="bulk-form"
                        class="w-full rounded border px-2 py-1">
               </td>
               <td class="px-4 py-2">
                 <input type="text" name="usuarios[{{ $usuario->id }}][apellido]" 
                        value="{{ $usuario->apellido }}" 
+                       form="bulk-form"
                        class="w-full rounded border px-2 py-1">
               </td>
               <td class="px-4 py-2">{{ $usuario->email }}</td>
               <td class="px-4 py-2">
-                <select name="usuarios[{{ $usuario->id }}][rol]" class="rounded border px-7 py-1">
+                <select name="usuarios[{{ $usuario->id }}][rol]" form="bulk-form" class="rounded border px-7 py-1">
                   <option value="usuario" @selected($usuario->rol==='usuario')>Usuario</option>
                   <option value="admin"   @selected($usuario->rol==='admin')>Admin</option>
                 </select>
               </td>
               <td class="px-4 py-2">
-                <select name="usuarios[{{ $usuario->id }}][estado]" class="rounded border px-2 py-1">
+                <select name="usuarios[{{ $usuario->id }}][estado]" form="bulk-form" class="rounded border px-2 py-1">
                   <option value="activo"  @selected($usuario->estado==='activo')>Activo</option>
                   <option value="revocado" @selected($usuario->estado==='revocado')>Revocado</option>
                 </select>
               </td>
               <td class="px-4 py-2">
-                <select name="usuarios[{{ $usuario->id }}][uid]" class="rounded border px-7 py-1">
+                <select name="usuarios[{{ $usuario->id }}][uid]" form="bulk-form" class="rounded border px-7 py-1">
                   <option value="">Quitar UID</option>
                   @if($usuario->tarjeta)
                     <option value="{{ $usuario->tarjeta->uid }}" selected>
@@ -77,22 +79,18 @@
                 </select>
               </td>
               <td class="px-4 py-2 text-center space-x-2">
-                {{-- Logs --}}
+                {{-- Enlace a logs --}}
                 <a href="{{ route('admin.usuarios.logs', $usuario->id) }}"
                    class="bg-gray-500 hover:bg-gray-700 text-white px-3 py-1 rounded inline-block">
                   Logs
                 </a>
-                {{-- Eliminar --}}
-                <form action="{{ route('admin.usuarios.destroy', $usuario->id) }}" 
-                      method="POST" class="inline-block" 
-                      onsubmit="return confirm('¿Eliminar usuario #{{ $usuario->id }}?');">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit"
-                    class="bg-red-600 hover:bg-red-800 text-white px-3 py-1 rounded">
-                    Eliminar
-                  </button>
-                </form>
+
+                {{-- Botón “Eliminar” usa su propio form fuera del bulk-form --}}
+                <button type="submit"
+                        form="delete-{{ $usuario->id }}"
+                        class="bg-red-600 hover:bg-red-800 text-white px-3 py-1 rounded">
+                  Eliminar
+                </button>
               </td>
             </tr>
           @endforeach
@@ -107,6 +105,16 @@
       </button>
     </div>
   </form>
+
+  {{-- Formulario de eliminación por usuario (uno por fila), _fuera_ del bulk-form --}}
+  @foreach($usuarios as $usuario)
+    <form id="delete-{{ $usuario->id }}"
+          action="{{ route('admin.usuarios.destroy', $usuario->id) }}"
+          method="POST" style="display: none;">
+      @csrf
+      @method('DELETE')
+    </form>
+  @endforeach
 
   {{-- Gráfico de métricas --}}
   <div class="max-w-xl mx-auto mb-6">
