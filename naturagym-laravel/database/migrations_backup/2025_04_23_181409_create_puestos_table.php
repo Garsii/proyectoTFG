@@ -5,14 +5,16 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
+    public function up(): void
     {
         Schema::create('puestos', function (Blueprint $table) {
-            $table->increments('id');
+            // Se usa id() (alias de bigIncrements) en lugar de increments para crear un BIGINT.
+            $table->id();
             $table->string('nombre', 50)->unique();
         });
     }
-    public function down()
+
+    public function down(): void
     {
         Schema::dropIfExists('puestos');
     }

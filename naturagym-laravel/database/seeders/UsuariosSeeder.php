@@ -17,7 +17,7 @@ class UsuariosSeeder extends Seeder
         DB::table('usuarios')->insert([
             'nombre' => 'Admin',
             'apellido' => 'User',
-            'email' => 'admin@naturagym.com',
+            'email' => 'admin@alvaroasir.com',
             'password' => bcrypt('password123'),  // Cambia por el hash real
             'rol' => 'admin',
             'estado' => 'activo',
