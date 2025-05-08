@@ -34,15 +34,10 @@ class AccesoDenegadoNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject("Acceso DENEGADO: UID {$this->uid}")
-                    ->greeting('¡Atención, administrador!')
-                    ->line("Se ha denegado un intento de acceso en **{$this->punto->nombre}**.")
-                    ->line("**Detalles del intento:**")
-                    ->line("- **UID**: {$this->uid}")
-                    ->line("- **Usuario**: {$this->usuario->nombre} {$this->usuario->apellido} (ID: {$this->usuario->id})")
-                    ->line("- **Email**: {$this->usuario->email}")
-                    ->line("- **Fecha / Hora**: {$this->fecha->format('Y-m-d H:i:s')}")
-                    ->action('Ver registros', url("/admin/usuarios/{$this->usuario->id}/logs"))
-                    ->salutation('Saludos,<br>Tu sistema NaturaGym');
+	    ->subject('Acceso Denegado')
+            ->line('El acceso con el UID ' . $this->uid . ' ha sido denegado.')
+            ->line('Fecha y hora: ' . $this->fecha)
+            ->line('Punto de acceso: ' . $this->punto->nombre)
+            ->line('Gracias por usar nuestra aplicación!');
     }
 }

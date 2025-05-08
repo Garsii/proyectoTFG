@@ -33,7 +33,7 @@ return [
             'transport'     => 'smtp',
             'scheme'        => env('MAIL_SCHEME'),
             'url'           => env('MAIL_URL'),
-            'host'          => env('MAIL_HOST', '127.0.0.1'),
+            'host'          => env('MAIL_HOST', 'smtp.ionos.es'),
             'port'          => env('MAIL_PORT', 587),
             'encryption'    => env('MAIL_ENCRYPTION', 'tls'),
             'username'      => env('MAIL_USERNAME'),
@@ -109,8 +109,10 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'admin@alvaroasir.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'admin@tfgmail.alvaroasir.com'),
         'name'    => env('MAIL_FROM_NAME', 'Naturagym'),
     ],
+
+    'admin_notification_email' => env('ADMIN_NOTIFICATION_EMAIL'),
 
 ];

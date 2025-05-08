@@ -59,4 +59,16 @@ Route::middleware('auth')
     Route::delete('profile',[ProfileController::class,'destroy'])->name('profile.destroy');
 });
 
+Route::get('/test-mail', function () {
+    try {
+        Mail::raw('Este es un correo de prueba desde Laravel.', function ($msg) {
+            $msg->to('admin@tfgmail.alvaroasir.com')
+                ->subject('Correo de prueba');
+        });
+
+        return 'Correo enviado correctamente.';
+    } catch (\Throwable $e) {
+        return 'Error al enviar correo: ' . $e->getMessage();
+    }
+});
 require __DIR__.'/auth.php';

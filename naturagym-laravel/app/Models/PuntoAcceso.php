@@ -15,6 +15,7 @@ class PuntoAcceso extends Model
     // Relación con registros
     public function registros()
     {
-        return $this->hasMany(Registro::class, 'punto_id');
+        return $this->hasMany(Registro::class, 'punto_acceso_id');
     }
+
 }

@@ -47,7 +47,7 @@ class AccesoController extends Controller
 
             // 4) Si se deniega, notificar al admin
             if (! $permitido) {
-                Notification::route('mail', 'admin@naturagym.com')
+                Notification::route('mail', 'admin@alvaroasir.com')
                     ->notify(new AccesoDenegadoNotification([
                         'uid'     => $uid,
                         'usuario' => $tarjeta->usuario,   // null‑safe, si no hay usuario mostrará —
