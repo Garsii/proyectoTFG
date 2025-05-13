@@ -27,6 +27,9 @@ Route::middleware(['auth','verified'])
     Route::get('/dashboard', fn() => redirect()->route('admin.usuarios.index'))
          ->name('dashboard');
 
+    // Renovar suscripcion
+    Route::post('usuarios/{id}/renovar', [AdminController::class, 'renovarSuscripcion'])->name('renovar');
+
     // Listado + bulk-update
     Route::get('usuarios', [UsuarioController::class,'index'])
          ->name('usuarios.index');

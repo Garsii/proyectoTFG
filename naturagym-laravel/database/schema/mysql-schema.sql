@@ -44,6 +44,8 @@ CREATE TABLE `usuarios` (
   `rol` ENUM('usuario','admin') NOT NULL DEFAULT 'usuario',
   `fecha_registro` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` ENUM('activo','revocado') NOT NULL DEFAULT 'activo',
+  -- Aquí agregamos la fecha de expiración de la suscripción:
+  `subscription_expires_at` TIMESTAMP NULL DEFAULT NULL,
   `puesto_id` BIGINT UNSIGNED DEFAULT NULL,
   `created_at` TIMESTAMP NULL,
   `updated_at` TIMESTAMP NULL,
