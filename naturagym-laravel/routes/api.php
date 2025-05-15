@@ -9,5 +9,5 @@ use App\Http\Controllers\Api\AccesoController;
 Route::post('lectura', [NfcController::class, 'store']);
 
 // REGISTRO de acceso
-Route::post('registro-acceso', [AccesoController::class, 'registrar']);
+Route::post('/registro-acceso', [AccesoController::class, 'registrar']);
 

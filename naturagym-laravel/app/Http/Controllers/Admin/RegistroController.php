@@ -29,7 +29,10 @@ class RegistroController extends Controller
      */
     public function store(Request $request)
     {
+
         //
+	 return response()->json(['mensaje' => 'Acceso registrado correctamente.']);
+
     }
 
     /**

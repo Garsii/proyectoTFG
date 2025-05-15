@@ -29,7 +29,7 @@ class AccesoPermitidoMail extends Mailable
             ->with([
                 'uid'       => $this->tarjeta->uid,
                 'usuario'   => $this->tarjeta->usuario,   
-                'fecha'     => $this->registro->fecha->format('Y-m-d H:i:s'),
+		'fecha'     => $this->registro->fecha, // sin el format aquí
                 'punto'     => $this->registro->puntoAcceso->nombre,  // ← aquí
             ]);
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Tarjeta;  // ← ¡Asegúrate de importar el modelo!
 
 class User extends Authenticatable
 {
@@ -31,7 +32,6 @@ class User extends Authenticatable
 
     public function tarjeta()
     {
-     return $this->hasOne(Tarjeta::class, 'usuario_id');
+        return $this->hasOne(Tarjeta::class, 'usuario_id');
     }
-
 }

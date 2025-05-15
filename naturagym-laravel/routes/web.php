@@ -27,6 +27,12 @@ Route::middleware(['auth','verified'])
     Route::get('/dashboard', fn() => redirect()->route('admin.usuarios.index'))
          ->name('dashboard');
 
+        // Rutas de usuarios
+         Route::get('usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+         Route::get('usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
+         Route::post('usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+
+
     // Renovar suscripcion
     Route::post('usuarios/{id}/renovar', [AdminController::class, 'renovarSuscripcion'])->name('renovar');
 
@@ -74,4 +80,7 @@ Route::get('/test-mail', function () {
         return 'Error al enviar correo: ' . $e->getMessage();
     }
 });
+
+Route::post('/api/registro-acceso', [\App\Http\Controllers\Api\AccesoController::class, 'registrar'])
+     ->name('api.registro-acceso');
 require __DIR__.'/auth.php';
