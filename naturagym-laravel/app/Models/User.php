@@ -21,11 +21,17 @@ class User extends Authenticatable
         'rol',
         'estado',
         'puesto_id',
+        'subscription_expires_at',  // si lo rellenas via mass-assignment
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    // ⚡ Aquí el cast:
+    protected $casts = [
+        'subscription_expires_at' => 'datetime',
     ];
 
     public $timestamps = true;

@@ -9,12 +9,24 @@ class Usuario extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = 'usuarios';         // le decimos que use la tabla `usuarios`
+    protected $table = 'usuarios';
     protected $primaryKey = 'id';
-    public $timestamps = false;            // la tabla usa solo `fecha_registro`
+    public $timestamps = false;
 
     protected $fillable = [
-        'nombre', 'apellido', 'email', 'password', 'rol', 'estado', 'puesto_id'
+        'nombre',
+        'apellido',
+        'email',
+        'password',
+        'rol',
+        'estado',
+        'puesto_id',
+        'subscription_expires_at',  // asegúrate de incluirlo si lo rellenas vía formulario/mass assignment
+    ];
+
+    // 👉 Aquí añadimos el casteo:
+    protected $casts = [
+        'subscription_expires_at' => 'datetime',
     ];
 
     // Relación con puesto
