@@ -24,10 +24,10 @@ Este proyecto forma parte de mi Trabajo de Fin de Grado en Administracion de Sis
 
 ## 🚀 Tecnologías
 
-- **PHP 8.1+ & Laravel 10**  
+- **PHP 8.3.6+ & Laravel 10**  
 - **Base de datos**: MySQL / MariaDB (relacional)  
 - **Frontend**: Blade · Tailwind CSS · Vite  
-- **IoT**: ESP32 con CircuitPython / Arduino C++  
+- **IoT y NFC**: ESP32 como bus de comunicacion con PN532 / Arduino C++  
 - **Correo**: IONOS SMTP  
 - **Servidor**: Apache 2.4 con OpenSSL (HTTP/HTTPS)  
 
