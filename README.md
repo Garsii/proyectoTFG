@@ -5,7 +5,7 @@
 
 ---
 
-## 📖 Descripción
+## Descripción
 
 **NaturaGym** es una plataforma full‑stack para la gestión de entrenamientos y sesiones de clientes en centros deportivos. Incluye:
 
@@ -22,7 +22,7 @@ Este proyecto forma parte de mi Trabajo de Fin de Grado en Administracion de Sis
 
 ---
 
-## 🚀 Tecnologías
+## Tecnologías
 
 - **PHP 8.3.6+ & Laravel 10**  
 - **Base de datos**: MySQL / MariaDB (relacional)  
@@ -33,7 +33,7 @@ Este proyecto forma parte de mi Trabajo de Fin de Grado en Administracion de Sis
 
 ---
 
-## 🔧 Instalación
+## Instalación
 
 1. **Clona el repositorio**  
    ```bash
