@@ -1,8 +1,8 @@
 # Proyecto TFG: NaturaGym
 
-> **Autora/el**: Álvaro García Jiménez  
+> **Autor**: Álvaro García Jiménez  
 > **Licencia**: MIT
-
+> **Instituto**: I.E.S Zaidin Vergeles
 ---
 
 ## Descripción
