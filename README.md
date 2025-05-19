@@ -11,32 +11,42 @@
 
 1. **Backend Laravel** (`naturagym‑laravel`):  
    - API RESTful y panel de administración  
-   - Gestión de usuarios, roles, sesiones y entrenamientos  
+   - Gestión de usuarios, roles, sesiones y suscripciones  
    - Autenticación, control de acceso y notificaciones  
 2. **Firmware Arduino** (`arduino`):  
    - Dispositivo IoT para lectura de sensores  
    - Integra datos en tiempo real a través de endpoints API  
    - Envía estadísticas de uso y alertas
 
-Este proyecto forma parte de mi Trabajo de Fin de Grado en Informática, y está pensado para ilustrar una arquitectura **polyglot** con componentes web, móvil y de hardware embebido.
+Este proyecto forma parte de mi Trabajo de Fin de Grado en Administracion de Sistemas Informaticos en Red, y está pensado para ilustrar una arquitectura **polyglot** con componentes web y de hardware embebido.
 
 ---
 
-## 🗂️ Estructura del repositorio
+## 🚀 Tecnologías
 
-```text
-proyectoTFG/
-├── arduino/                     # Código para microcontrolador
-│   ├── src/                     # Sketch principal (Arduino IDE)
-│   └── lib/                     # Librerías adicionales
-├── naturagym‑laravel/           # Aplicación Laravel (v10+)
-│   ├── app/                     # Lógica de negocio
-│   ├── config/                  # Configuración del framework
-│   ├── database/                # Migraciones, seeders y factories
-│   ├── public/                  # Punto de entrada (DocumentRoot)
-│   ├── resources/               # Vistas Blade y assets
-│   └── routes/                  # Definición de rutas web y API
-├── .env.example                 # Variables de entorno de muestra
-├── README.md                    # Este fichero
-└── LICENSE                      # Licencia MIT
+- **PHP 8.1+ & Laravel 10**  
+- **Base de datos**: MySQL / MariaDB (relacional)  
+- **Frontend**: Blade · Tailwind CSS · Vite  
+- **IoT**: ESP32 con CircuitPython / Arduino C++  
+- **Correo**: IONOS SMTP  
+- **Servidor**: Apache 2.4 con OpenSSL (HTTP/HTTPS)  
 
+---
+
+## 🔧 Instalación
+
+1. **Clona el repositorio**  
+   ```bash
+   git clone https://github.com/Garsii/proyectoTFG.git
+   cd proyectoTFG/naturagym-laravel
+
+2. **Configura el entorno**
+   ```bash
+   cp .env.example .env
+   composer install
+   npm install
+   npm run build    # o `npm run dev` en desarrollo
+   php artisan key:generate
+3. **Base de datos**
+   ```bash
+   mysql -u tu_usuario -p naturagym < ../database/schema/naturagym_schema.sql
