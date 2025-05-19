@@ -2,7 +2,6 @@
 
 > **Autor**: Álvaro García Jiménez  
 > **Licencia**: MIT
-> **Instituto**: I.E.S Zaidin Vergeles
 ---
 
 ## Descripción
