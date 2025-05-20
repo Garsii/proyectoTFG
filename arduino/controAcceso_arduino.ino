@@ -15,20 +15,17 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 const char* ssid     = "iPhone de Alvaro";
 const char* password = "tfg2025ASIR";
 
-// Señales
-const int ledVerde = 16, ledRojo = 17, rele = 18;
-
 // Parámetros I2C/NFC
 const int I2C_RECOVER_THRESHOLD = 5;
 const int MAX_I2C_ATTEMPTS      = 3;
-const unsigned long NFC_COOLDOWN = 10000; // 10 s
+const unsigned long NFC_COOLDOWN = 5000; // 5 s
 
 // Estado
 unsigned long lastReadTime = 0;
 String lastUid = "";
 int i2cErrorCount = 0;
 
-// ——— Inicializa o recupera bus I2C + PN532 ———
+// ——— Inicializa o recupera bus I²C + PN532 ———
 void initI2CAndPN532() {
   Serial.println("🔄 Recover I2C & PN532");
   Wire.end();
@@ -59,9 +56,10 @@ void connectWiFi() {
 // ——— Setup ———
 void setup() {
   Serial.begin(115200);
-  pinMode(ledVerde, OUTPUT);
-  pinMode(ledRojo, OUTPUT);
-  pinMode(rele, OUTPUT);
+  // Si no tienes LEDs, comenta estas líneas:
+  // pinMode(16, OUTPUT);
+  // pinMode(17, OUTPUT);
+  // pinMode(18, OUTPUT);
 
   Wire.begin(SDA_PIN, SCL_PIN);
   Wire.setClock(50000);
@@ -104,58 +102,68 @@ bool readNfcUid(String &outUid) {
 }
 
 // ——— Envía al servidor SIEMPRE por HTTPS ———
-void sendToServer(const String& uid) {
+bool sendToServer(const String& uid) {
   if (WiFi.status() != WL_CONNECTED) connectWiFi();
 
-  // Cliente seguro que acepta certificado autofirmado
   WiFiClientSecure client;
-  client.setInsecure();  // << Confía en cualquier certificado (solo para dev)
+  client.setInsecure();
 
   HTTPClient https;
   https.setTimeout(15000);
 
-  // Usa la URL HTTPS directamente
   const char* url = "https://alvaroasir.com/api/registro-acceso";
 
   if (!https.begin(client, url)) {
     Serial.println("https.begin() falló");
-    return;
+    return false;
   }
 
   https.addHeader("Content-Type", "application/json");
   String body = "{\"uid\":\"" + uid + "\",\"punto_acceso_id\":1}";
 
   int code = https.POST(body);
-  Serial.println("HTTPS code: " + String(code));
   String resp = https.getString();
+  Serial.println("HTTPS code: " + String(code));
   Serial.println("Response: " + resp);
 
-  if (code >= 200 && code < 300) {
-    digitalWrite(ledVerde, HIGH);
-    digitalWrite(rele, HIGH);
-    delay(2000);
-    digitalWrite(rele, LOW);
-    digitalWrite(ledVerde, LOW);
-  } else {
-    Serial.println("Error: " + https.errorToString(code));
-    digitalWrite(ledRojo, HIGH);
-    delay(2000);
-    digitalWrite(ledRojo, LOW);
-  }
-
   https.end();
+
+  return (code >= 200 && code < 300);
+}
+
+// ——— Espera a que la tarjeta sea retirada del lector ———
+void waitForRemoval() {
+  uint8_t buf[7], len;
+  // Mientras siga leyendo la misma tarjeta, espera
+  while (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, buf, &len)) {
+    delay(100);
+  }
 }
 
 // ——— Loop ———
 void loop() {
   String uid;
-  if (readNfcUid(uid)) {
-    if (uid != lastUid || millis() - lastReadTime > NFC_COOLDOWN) {
-      lastUid = uid;
-      lastReadTime = millis();
+  
+  // Sólo intentamos leer si ha pasado el cooldown
+  if (millis() - lastReadTime >= NFC_COOLDOWN) {
+    if (readNfcUid(uid)) {
+      lastReadTime = millis();  // marcamos el inicio del nuevo cooldown
       Serial.println("UID: " + uid);
-      sendToServer(uid);
+
+      bool ok = sendToServer(uid);
+
+      // Feedback: LEDs o relé si los tienes
+      if (ok) {
+        // digitalWrite(16, HIGH);
+        // delay(200);
+        // digitalWrite(16, LOW);
+      } else {
+        // digitalWrite(17, HIGH);
+        // delay(200);
+        // digitalWrite(17, LOW);
+      }
     }
   }
-  delay(100);
+
+  delay(50);
 }

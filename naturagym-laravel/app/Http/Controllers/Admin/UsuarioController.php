@@ -84,20 +84,37 @@ class UsuarioController extends Controller
     /** 3) STORE */
     public function store(Request $r)
     {
+        // 1) Validación
         $data = $r->validate([
-            'nombre'    => 'required|string|max:50',
-            'apellido'  => 'required|string|max:50',
-            'email'     => 'required|email|unique:users,email',
-            'rol'       => 'required|in:usuario,admin',
-            'estado'    => 'required|in:activo,revocado',
-            'puesto_id' => 'nullable|exists:puestos,id',
+            'nombre'          => 'required|string|max:50',
+            'apellido'        => 'required|string|max:50',
+            'email'           => 'required|email|unique:usuarios,email',
+            'rol'             => 'required|in:usuario,admin',
+            'estado'          => 'required|in:activo,revocado',
+            'puesto_id'       => 'nullable|exists:puestos,id',
+            'password_input'  => 'nullable|string|min:8',
         ]);
 
-        $data['password'] = bcrypt(Str::random(10));
-        User::create($data);
+        // 2) Generar o usar la proporcionada
+        if (!empty($data['password_input'])) {
+            $plainPassword = $data['password_input'];
+        } else {
+            $plainPassword = Str::random(10);
+        }
 
-        return redirect()->route('admin.usuarios.index')
-                         ->with('success','Usuario creado correctamente.');
+        // 3) Hashear para guardar
+        $data['password'] = bcrypt($plainPassword);
+
+        // 4) Fecha de expiración por defecto (p. ej., 30 días)
+        $data['subscription_expires_at'] = Carbon::now()->addDays(30);
+
+        // 5) Crear usuario
+        $user = User::create($data);
+
+        // 6) Redirigir con flash message que incluye la contraseña
+        return redirect()
+            ->route('admin.usuarios.index')
+            ->with('success', "Usuario creado. Contraseña: <strong>{$plainPassword}</strong>");
     }
 
     /** 4) EDIT */

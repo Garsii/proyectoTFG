@@ -18,54 +18,80 @@
     @csrf
 
     <div>
-      <label class="block text-2xs mb-1">Nombre</label>
-      <input type="text" name="nombre" value="{{ old('nombre') }}"
+      <label for="nombre" class="block text-2xs font-medium mb-1">Nombre</label>
+      <input type="text" name="nombre" id="nombre" value="{{ old('nombre') }}"
              class="w-full px-3 py-2 border rounded text-xs" required>
     </div>
 
     <div>
-      <label class="block text-2xs mb-1">Apellido</label>
-      <input type="text" name="apellido" value="{{ old('apellido') }}"
+      <label for="apellido" class="block text-2xs font-medium mb-1">Apellido</label>
+      <input type="text" name="apellido" id="apellido" value="{{ old('apellido') }}"
              class="w-full px-3 py-2 border rounded text-xs" required>
     </div>
 
     <div>
-      <label class="block text-2xs mb-1">Email</label>
-      <input type="email" name="email" value="{{ old('email') }}"
+      <label for="email" class="block text-2xs font-medium mb-1">Email</label>
+      <input type="email" name="email" id="email" value="{{ old('email') }}"
              class="w-full px-3 py-2 border rounded text-xs" required>
     </div>
 
     <div>
-      <label class="block text-2xs mb-1">Rol</label>
-      <select name="rol" class="w-full px-3 py-2 border rounded text-xs">
+      <label for="password_input" class="block text-2xs font-medium mb-1">Contraseña (opcional)</label>
+      <input
+        type="text"
+        name="password_input"
+        id="password_input"
+        class="w-full px-3 py-2 border rounded text-xs"
+        placeholder="Déjalo en blanco para generar una aleatoria"
+        value="{{ old('password_input') }}"
+      >
+      <p class="text-2xs text-gray-500 mt-1">
+        Si lo dejas vacío, se generará automáticamente.
+      </p>
+      @error('password_input')
+        <p class="text-red-600 text-2xs mt-1">{{ $message }}</p>
+      @enderror
+    </div>
+
+    <div>
+      <label for="rol" class="block text-2xs font-medium mb-1">Rol</label>
+      <select name="rol" id="rol" class="w-full px-3 py-2 border rounded text-xs">
         @foreach($roles as $rol)
-          <option value="{{ $rol }}" @selected(old('rol') == $rol)>{{ ucfirst($rol) }}</option>
+          <option value="{{ $rol }}" @selected(old('rol') == $rol)>
+            {{ ucfirst($rol) }}
+          </option>
         @endforeach
       </select>
     </div>
 
     <div>
-      <label class="block text-2xs mb-1">Estado</label>
-      <select name="estado" class="w-full px-3 py-2 border rounded text-xs">
-        <option value="activo" @selected(old('estado')=='activo')>Activo</option>
+      <label for="estado" class="block text-2xs font-medium mb-1">Estado</label>
+      <select name="estado" id="estado" class="w-full px-3 py-2 border rounded text-xs">
+        <option value="activo"   @selected(old('estado')=='activo')>Activo</option>
         <option value="revocado" @selected(old('estado')=='revocado')>Revocado</option>
       </select>
     </div>
 
     <div>
-      <label class="block text-2xs mb-1">Puesto</label>
-      <select name="puesto_id" class="w-full px-3 py-2 border rounded text-xs">
+      <label for="puesto_id" class="block text-2xs font-medium mb-1">Puesto</label>
+      <select name="puesto_id" id="puesto_id" class="w-full px-3 py-2 border rounded text-xs">
         <option value="">-- Ninguno --</option>
         @foreach($puestos as $p)
-          <option value="{{ $p->id }}" @selected(old('puesto_id') == $p->id)>{{ $p->nombre }}</option>
+          <option value="{{ $p->id }}" @selected(old('puesto_id') == $p->id)>
+            {{ $p->nombre }}
+          </option>
         @endforeach
       </select>
-      @error('puesto_id')<div class="text-red-600 text-2xs mt-1">{{ $message }}</div>@enderror
+      @error('puesto_id')
+        <p class="text-red-600 text-2xs mt-1">{{ $message }}</p>
+      @enderror
     </div>
 
     <div class="flex justify-end space-x-2 mt-6">
-      <a href="{{ route('admin.usuarios.index') }}" class="text-gray-600 text-2xs hover:underline">Cancelar</a>
-      <button type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded text-xs">
+      <a href="{{ route('admin.usuarios.index') }}"
+         class="text-gray-600 text-2xs hover:underline">Cancelar</a>
+      <button type="submit"
+              class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded text-xs">
         Guardar
       </button>
     </div>
